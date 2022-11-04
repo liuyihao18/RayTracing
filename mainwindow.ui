@@ -98,7 +98,7 @@
      <number>24</number>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="imageWidth">
     <property name="geometry">
      <rect>
       <x>730</x>
@@ -156,7 +156,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox1">
+   <widget class="QSpinBox" name="nSamples">
     <property name="geometry">
      <rect>
       <x>730</x>
@@ -182,7 +182,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox2">
+   <widget class="QSpinBox" name="maxDepth">
     <property name="geometry">
      <rect>
       <x>730</x>

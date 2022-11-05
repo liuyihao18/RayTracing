@@ -21,8 +21,10 @@ public:
     void initialize();
 
 private slots:
+    void onProgressUpdated(double progress);
+
     void on_importButton_clicked();
-    void on_progress_updated(double progress);
+    void on_abortButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -196,13 +196,26 @@
     <property name="geometry">
      <rect>
       <x>690</x>
-      <y>270</y>
+      <y>310</y>
       <width>75</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
      <string>保存图片</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="abortButton">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>270</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>停止</string>
     </property>
    </widget>
   </widget>

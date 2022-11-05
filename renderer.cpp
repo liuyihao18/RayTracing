@@ -37,11 +37,11 @@ void Renderer::render(bool use_bvh)
     if (use_bvh)
     {
         BVHNode bvh(_scene.src());
-        _render(_camera, _scene.background(), bvh, _image);
+        _render(_camera, bvh, _scene.background(), _image);
     }
     else
     {
-        _render(_camera, _scene.background(), _scene.src(), _image);
+        _render(_camera, _scene.src(), _scene.background(), _image);
     }
 }
 
@@ -50,7 +50,7 @@ void Renderer::run()
     render(true);
 }
 
-void Renderer::_render(const Camera &camera, const Color &background, const Hittable &_scene, QImage &image)
+void Renderer::_render(const Camera &camera, const Hittable &_scene, const Color &background, QImage &image)
 {
     QVector<QVector<Color>> buffer(_image_width, QVector<Color>(_image_height, Color(0, 0, 0)));
     for (int s = 0; s < _n_samples; s++)

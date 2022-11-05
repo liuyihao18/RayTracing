@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     if (_renderer) {
+        _renderer->terminate();
         delete _renderer;
     }
     delete ui;
@@ -39,6 +40,14 @@ void MainWindow::initialize()
     ui->maxDepth->setValue(50);
 }
 
+void MainWindow::onProgressUpdated(double progress)
+{
+    ui->progressBar->setValue(100 * progress);
+    ui->imageView->setPixmap(QPixmap::fromImage(_image).scaled(ui->imageView->size()));
+    if (static_cast<int>(100 * progress) == 100) {
+        QMessageBox::information(this, QString("提示"), QString("渲染完成"));
+    }
+}
 
 void MainWindow::on_importButton_clicked()
 {
@@ -47,6 +56,7 @@ void MainWindow::on_importButton_clicked()
             return;
         }
         delete _renderer;
+        _renderer = nullptr;
     }
 
     int image_height = ui->imageHeight->currentText().toInt();
@@ -64,17 +74,23 @@ void MainWindow::on_importButton_clicked()
     /* Renderer */
     int n_samples = ui->nSamples->value();
     int max_depth = ui->maxDepth->value();
-    _renderer = new Renderer(image_height, n_samples, max_depth, _camera, _scene, _image);
-    connect(_renderer, SIGNAL(update_progress(double)), this, SLOT(on_progress_updated(double)));
+    _renderer = new Renderer(_camera, _scene, _image, image_height, n_samples, max_depth);
+    connect(_renderer, SIGNAL(update_progress(double)), this, SLOT(onProgressUpdated(double)));
     _renderer->start();
 }
 
-void MainWindow::on_progress_updated(double progress)
+void MainWindow::on_abortButton_clicked()
 {
-    ui->progressBar->setValue(100 * progress);
-    ui->imageView->setPixmap(QPixmap::fromImage(_image).scaled(ui->imageView->size()));
-    if (static_cast<int>(100 * progress) == 100) {
-        QMessageBox::information(this, QString("提示"), QString("渲染完成"));
+    if (_renderer) {
+        _renderer->terminate();
+        delete _renderer;
+        _renderer = nullptr;
     }
+    ui->progressBar->setValue(0);
+    QMessageBox::information(this, QString("提示"), QString("停止成功"));
 }
+
+
+
+
 

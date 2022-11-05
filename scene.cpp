@@ -49,13 +49,246 @@ Scene Scene::createFromJson(const QString &path, bool *ok)
     }
 
     auto json = jsonDoc.object();
-    if (!json.contains("objects"))
+    Scene scene(Color(0.1, 0.15, 0.2));
+    if (json.contains("background"))
     {
-        GUIHandler::Inst()->info("找不到场景配置：" + jsonFile.fileName());
-        return Scene(Color(0.1, 0.15, 0.2));
+        auto background_json = json.value("background");
+        if (background_json.isArray())
+        {
+            if (background_json.toArray().size() != 3)
+            {
+                GUIHandler::Inst()->info("background");
+            }
+            scene = Scene(json_to_vec(background_json.toArray()));
+        }
+        else if (background_json.isString())
+        {
+            scene = Scene(background_json.toString());
+        }
+        else
+        {
+            GUIHandler::Inst()->info("background");
+        }
     }
 
-    Scene scene;
+    if (json.contains("objects"))
+    {
+        auto objects_json = json.value("objects");
+        if (!objects_json.isArray())
+        {
+            GUIHandler::Inst()->info("objects");
+        }
+        auto object = objects_json.toArray();
+        for (int i = 0; i < object.size(); i++)
+        {
+            auto object_json = objects_json[i];
+            if (!object_json.isObject())
+            {
+                GUIHandler::Inst()->info("objects[" + QString::number(i) + "]");
+                continue;
+            }
+            auto object = object_json.toObject();
+
+            /* texture */
+            QSharedPointer<Texture> texture_ptr = QSharedPointer<ColorTexture>::create(Color(0.5, 0.5, 0.5));
+            ;
+            if (object.contains("texture"))
+            {
+                auto texture_json = object.value("texture");
+                if (texture_json.isArray() && texture_json.toArray().size() == 3)
+                {
+                    texture_ptr = QSharedPointer<ColorTexture>::create(json_to_vec(texture_json.toArray()));
+                }
+                else if (texture_json.isString())
+                {
+                    texture_ptr = QSharedPointer<ImageTexture>::create(texture_json.toString());
+                }
+            }
+
+            /* material */
+            QSharedPointer<Material> material_ptr = QSharedPointer<Lambertian>::create(texture_ptr);
+            if (object.contains("material"))
+            {
+                auto material_json = object.value("material");
+                if (material_json.isObject())
+                {
+                    auto material = material_json.toObject();
+                    if (material.contains("type"))
+                    {
+                        auto type = material.value("type").toString("lambertian");
+                        if (type == "lambertian")
+                        {
+                            material_ptr = QSharedPointer<Lambertian>::create(texture_ptr);
+                        }
+                        else if (type == "glass")
+                        {
+                            double ratio = 1.5;
+                            if (material.contains("ratio"))
+                            {
+                                ratio = material.value("ratio").toDouble(ratio);
+                            }
+                            material_ptr = QSharedPointer<Glass>::create(ratio);
+                        }
+                        else if (type == "metal")
+                        {
+                            double fuzz = 0.0;
+                            if (material.contains("fuzz"))
+                            {
+                                fuzz = material.value("fuzz").toDouble(fuzz);
+                            }
+                            material_ptr = QSharedPointer<Metal>::create(texture_ptr, fuzz);
+                        }
+                    }
+                }
+            }
+
+            /* type */
+            QString type = "sphere";
+            if (object.contains("type"))
+            {
+                type = object.value("type").toString(type);
+            }
+            QSharedPointer<Hittable> ptr;
+            if (type == "sphere")
+            {
+                Point center(0, 0, 0);
+                double radius = 1.0;
+                if (object.contains("geometric"))
+                {
+                    auto geometric_json = object.value("geometric");
+                    if (geometric_json.isObject())
+                    {
+                        auto geometric = geometric_json.toObject();
+                        if (geometric.contains("center"))
+                        {
+                            center = json_to_vec(geometric.value("center").toArray({center[0], center[1], center[2]}));
+                        }
+                        if (geometric.contains("radius"))
+                        {
+                            radius = geometric.value("radius").toDouble(radius);
+                        }
+                    }
+                }
+                ptr = QSharedPointer<Sphere>::create(center, radius, material_ptr);
+            }
+            else if (type == "xz_rect")
+            {
+                double x0 = -1;
+                double x1 = 1;
+                double z0 = -1;
+                double z1 = 1;
+                double y = 0;
+                if (object.contains("geometric"))
+                {
+                    auto geometric_json = object.value("geometric");
+                    if (geometric_json.isObject())
+                    {
+                        auto geometric = geometric_json.toObject();
+                        if (geometric.contains("x0"))
+                        {
+                            x0 = geometric.value("x0").toDouble(x0);
+                        }
+                        if (geometric.contains("x1"))
+                        {
+                            x1 = geometric.value("x1").toDouble(x1);
+                        }
+                        if (geometric.contains("z0"))
+                        {
+                            z0 = geometric.value("z0").toDouble(z0);
+                        }
+                        if (geometric.contains("z1"))
+                        {
+                            z1 = geometric.value("z1").toDouble(z1);
+                        }
+                        if (geometric.contains("y"))
+                        {
+                            y = geometric.value("y").toDouble(y);
+                        }
+                    }
+                }
+                ptr = QSharedPointer<XZRect>::create(x0, x1, z0, z1, y, material_ptr);
+            }
+            else if (type == "xy_rect")
+            {
+                double x0 = -1;
+                double x1 = 1;
+                double y0 = -1;
+                double y1 = 1;
+                double z = 0;
+                if (object.contains("geometric"))
+                {
+                    auto geometric_json = object.value("geometric");
+                    if (geometric_json.isObject())
+                    {
+                        auto geometric = geometric_json.toObject();
+                        if (geometric.contains("x0"))
+                        {
+                            x0 = geometric.value("x0").toDouble(x0);
+                        }
+                        if (geometric.contains("x1"))
+                        {
+                            x1 = geometric.value("x1").toDouble(x1);
+                        }
+                        if (geometric.contains("y0"))
+                        {
+                            y0 = geometric.value("y0").toDouble(y0);
+                        }
+                        if (geometric.contains("y1"))
+                        {
+                            y1 = geometric.value("y1").toDouble(y1);
+                        }
+                        if (geometric.contains("z"))
+                        {
+                            z = geometric.value("z").toDouble(z);
+                        }
+                    }
+                }
+                ptr = QSharedPointer<XYRect>::create(x0, x1, y0, y1, z, material_ptr);
+            }
+            else if (type == "yz_rect")
+            {
+                double y0 = -1;
+                double y1 = 1;
+                double z0 = -1;
+                double z1 = 1;
+                double x = 0;
+                if (object.contains("geometric"))
+                {
+                    auto geometric_json = object.value("geometric");
+                    if (geometric_json.isObject())
+                    {
+                        auto geometric = geometric_json.toObject();
+                        if (geometric.contains("y0"))
+                        {
+                            y0 = geometric.value("y0").toDouble(y0);
+                        }
+                        if (geometric.contains("y1"))
+                        {
+                            y1 = geometric.value("y1").toDouble(y1);
+                        }
+                        if (geometric.contains("z0"))
+                        {
+                            z0 = geometric.value("z0").toDouble(z0);
+                        }
+                        if (geometric.contains("z1"))
+                        {
+                            z1 = geometric.value("z1").toDouble(z1);
+                        }
+                        if (geometric.contains("x"))
+                        {
+                            x = geometric.value("x").toDouble(x);
+                        }
+                    }
+                }
+                ptr = QSharedPointer<XZRect>::create(y0, y1, z0, z1, x, material_ptr);
+            }
+            if (!ptr.isNull())
+            {
+                scene.add(ptr);
+            }
+        }
+        return scene;
+    }
 
     return scene;
 }
@@ -143,7 +376,7 @@ Scene Scene::test_scene_2()
 Scene Scene::test_scene_3()
 {
 
-    Scene scene("./sky.jpg");
+    Scene scene("./texture/sky.jpg");
 
     /* ground */
     auto ground_material = QSharedPointer<Lambertian>::create(Color(0.8, 0.7, 0.4));
@@ -151,7 +384,7 @@ Scene Scene::test_scene_3()
     scene.add(ground);
 
     /* sphere */
-    auto earth_texture = QSharedPointer<ImageTexture>::create("earth.jpg");
+    auto earth_texture = QSharedPointer<ImageTexture>::create("./texture/earth.jpg");
     auto center_material = QSharedPointer<Lambertian>::create(earth_texture);
     auto center = QSharedPointer<Sphere>::create(Point(0, 0.5, 0), 0.5, center_material);
     scene.add(center);
@@ -171,7 +404,7 @@ Scene Scene::test_scene_3()
     scene.add(back);
 
     /* cube */
-    auto container_texture = QSharedPointer<ImageTexture>::create("container.jpg");
+    auto container_texture = QSharedPointer<ImageTexture>::create("./texture/container.jpg");
     auto container_material = QSharedPointer<Lambertian>::create(container_texture);
     auto container = QSharedPointer<Cube>::create(Point(0, 0, 0), Point(1, 1, 1), container_material);
     QMatrix4x4 container_model;
@@ -201,7 +434,7 @@ Scene Scene::test_scene_3()
 
     /* bunny */
     auto bunny_material = QSharedPointer<Lambertian>::create(rgb_to_color(255, 251, 240));
-    auto bunny = QSharedPointer<Mesh>::create("./bunny.obj", bunny_material);
+    auto bunny = QSharedPointer<Mesh>::create("./model/bunny.obj", bunny_material);
     QMatrix4x4 bunny_model;
     bunny_model.translate(QVector3D(-0.25, 0, 0.88));
     bunny_model.scale(3.0);

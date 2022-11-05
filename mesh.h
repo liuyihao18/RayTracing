@@ -8,7 +8,7 @@ class Mesh : public Hittable
 {
 public:
     Mesh() = default;
-    Mesh(const QString &filename, QSharedPointer<Material> material_ptr);
+    Mesh(const QString &filename, QSharedPointer<Material> material_ptr, bool *ok = nullptr);
 
     virtual bool hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) const override;
     virtual bool get_bounding_box(AABB &aabb) const override;

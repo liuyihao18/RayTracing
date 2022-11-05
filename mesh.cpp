@@ -3,12 +3,20 @@
 #include "OBJ_Loader.h"
 #include "gui_handler.h"
 
-Mesh::Mesh(const QString &filename, QSharedPointer<Material> material_ptr)
+Mesh::Mesh(const QString &filename, QSharedPointer<Material> material_ptr, bool *ok)
 {
     objl::Loader loader;
     if (!loader.LoadFile(filename.toStdString()))
     {
-        GUIHandler::Inst()->err("无法导入OBJ文件：" + filename);
+        GUIHandler::Inst()->warn("无法导入OBJ文件：" + filename);
+        if (ok) {
+            *ok = false;
+        }
+        return;
+    }
+
+    if (ok) {
+        *ok = true;
     }
 
     auto mesh = loader.LoadedMeshes[0];

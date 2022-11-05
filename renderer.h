@@ -22,7 +22,7 @@ private:
     int _n_samples;
     int _max_depth;
 
-    void _render(const Camera &camera, const Hittable &_scene, const Color &background, QImage &image);
+    void _render(const Camera &camera, const Hittable &_scene, QImage &image);
 };
 
 #endif // RENDERER_H

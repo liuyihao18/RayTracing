@@ -9,6 +9,56 @@
 #include "metal.h"
 #include "image_texture.h"
 #include "light.h"
+#include "gui_handler.h"
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+
+Scene Scene::createFromJson(const QString &path, bool *ok)
+{
+    QFile jsonFile(path);
+    if (!jsonFile.open(QIODevice::ReadOnly))
+    {
+        GUIHandler::Inst()->warn("无法打开场景文件：" + jsonFile.fileName());
+        if (ok)
+        {
+            *ok = false;
+        }
+        return Scene();
+    }
+
+    auto data = jsonFile.readAll();
+    jsonFile.close();
+
+    QJsonParseError jsonError;
+    auto jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+    if (jsonError.error != QJsonParseError::NoError)
+    {
+        GUIHandler::Inst()->warn("场景文件格式错误：" + jsonFile.fileName());
+        if (ok)
+        {
+            *ok = false;
+        }
+        return Scene();
+    }
+
+    if (ok)
+    {
+        *ok = true;
+    }
+
+    auto json = jsonDoc.object();
+    if (!json.contains("objects"))
+    {
+        GUIHandler::Inst()->info("找不到场景配置：" + jsonFile.fileName());
+        return Scene(Color(0.1, 0.15, 0.2));
+    }
+
+    Scene scene;
+
+    return scene;
+}
 
 Scene Scene::test_scene_1()
 {
@@ -73,7 +123,7 @@ Scene Scene::test_scene_1()
 
 Scene Scene::test_scene_2()
 {
-    Scene scene(Color(0.0, 0.0, 0.0));
+    Scene scene("./sky.jpg");
 
     /* ground */
     auto ground_material = QSharedPointer<Lambertian>::create(Color(0.8, 0.7, 0.4));
@@ -87,19 +137,13 @@ Scene Scene::test_scene_2()
     bunny_model.scale(8.0);
     scene.add(bunny, bunny_model);
 
-    /* light */
-    auto light_texture = QSharedPointer<ImageTexture>::create("./sky.jpg");
-    auto light_material = QSharedPointer<Light>::create(light_texture, 1.0);
-    auto light = QSharedPointer<Sphere>::create(Point(0, 0, 0), 1000, light_material);
-    scene.add(light);
-
     return scene;
 }
 
-Scene Scene::final_scene()
+Scene Scene::test_scene_3()
 {
 
-    Scene scene(Color(0.0, 0.0, 0.0));
+    Scene scene("./sky.jpg");
 
     /* ground */
     auto ground_material = QSharedPointer<Lambertian>::create(Color(0.8, 0.7, 0.4));
@@ -140,12 +184,6 @@ Scene Scene::final_scene()
     auto light = QSharedPointer<Sphere>::create(Point(-0.5, 1.35, 0.25), 0.1, light_material);
     scene.add(light);
 
-    /* light */
-    auto ambient_light_texture = QSharedPointer<ImageTexture>::create("./sky.jpg");
-    auto ambient_light_material = QSharedPointer<Light>::create(ambient_light_texture, 1.0);
-    auto ambient_light = QSharedPointer<Sphere>::create(Point(0, 0, 0), 1000, ambient_light_material);
-    scene.add(ambient_light);
-
     /* mirror */
     auto mirror_material = QSharedPointer<Metal>::create(Color(1, 1, 1), 0.0);
     auto mirror = QSharedPointer<XYRect>::create(-1.5, 1.5, 0, 1.75, -1, mirror_material);
@@ -170,4 +208,20 @@ Scene Scene::final_scene()
     scene.add(bunny, bunny_model);
 
     return scene;
+}
+
+Scene::Scene(const Color &background)
+{
+    auto ambient_light_texture = QSharedPointer<ColorTexture>::create(background);
+    auto ambient_light_material = QSharedPointer<Light>::create(ambient_light_texture, 1.0);
+    auto ambient_light = QSharedPointer<Sphere>::create(Point(0, 0, 0), 10000, ambient_light_material);
+    add(ambient_light);
+}
+
+Scene::Scene(const QString &background_image)
+{
+    auto ambient_light_texture = QSharedPointer<ImageTexture>::create(background_image);
+    auto ambient_light_material = QSharedPointer<Light>::create(ambient_light_texture, 1.0);
+    auto ambient_light = QSharedPointer<Sphere>::create(Point(0, 0, 0), 10000, ambient_light_material);
+    add(ambient_light);
 }

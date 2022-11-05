@@ -72,7 +72,8 @@ void MainWindow::onErrMsgReceived(QString errMsg)
 void MainWindow::on_importButton_clicked()
 {
     /* World */
-    _scene = Scene::final_scene();
+    // _scene = Scene::createFromJson("./scene/1.json", &_ok);
+    _scene = Scene::test_scene_3();
 
     /* Camera */
     _camera = Camera::createFromJson("./scene/1.json", &_ok);

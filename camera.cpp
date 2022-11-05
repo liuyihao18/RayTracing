@@ -5,7 +5,6 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QDebug>
 
 Camera Camera::createFromJson(const QString &path, bool *ok)
 {

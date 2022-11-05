@@ -7,15 +7,15 @@
 class Scene
 {
 public:
+    static Scene createFromJson(const QString &path, bool *ok = nullptr);
     static Scene test_scene_1();
     static Scene test_scene_2();
-    static Scene final_scene();
+    static Scene test_scene_3();
 
 public:
     Scene() = default;
-    Scene(const Color &background) : _background(background) {}
-
-    Color background() const noexcept { return _background; }
+    Scene(const Color &background);
+    Scene(const QString& background_image);
 
     void add(QSharedPointer<Hittable> object) { _src.add(object); }
     void add(QSharedPointer<Hittable> object, const QMatrix4x4 &model) { _src.add(QSharedPointer<Transform>::create(object, model)); }
@@ -23,7 +23,6 @@ public:
     HittableList src() const noexcept { return _src; };
 
 private:
-    Color _background;
     HittableList _src;
 };
 

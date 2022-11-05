@@ -304,6 +304,46 @@ Scene Scene::createFromJson(const QString &path, bool *ok)
                 }
                 ptr = QSharedPointer<Cube>::create(min, max, material_ptr);
             }
+            else if (type == "triangle")
+            {
+                Point p1(1.0, 0.0, 0.0);
+                Point p2(0.0, 1.0, 0.0);
+                Point p3(0.0, 0.0, 1.0);
+                if (object.contains("geometric"))
+                {
+                    auto geometric_json = object.value("geometric");
+                    if (geometric_json.isObject())
+                    {
+                        auto geometric = geometric_json.toObject();
+                        if (geometric.contains("p1"))
+                        {
+                            p1 = json_to_vec(geometric.value("p1").toArray({p1[0], p1[1], p1[2]}));
+                        }
+                        if (geometric.contains("p2"))
+                        {
+                            p2 = json_to_vec(geometric.value("p2").toArray({p2[0], p2[1], p2[2]}));
+                        }
+                        if (geometric.contains("p3"))
+                        {
+                            p3 = json_to_vec(geometric.value("p3").toArray({p3[0], p3[1], p3[2]}));
+                        }
+                    }
+                    ptr = QSharedPointer<Triangle>::create(p1, p2, p3, material_ptr);
+                }
+            }
+            else if (type == "mesh")
+            {
+                if (object.contains("file"))
+                {
+                    auto file = object.value("file").toString();
+                    bool ok = false;
+                    ptr = QSharedPointer<Mesh>::create(file, material_ptr, &ok);
+                    if (!ok)
+                    {
+                        ptr.clear();
+                    }
+                }
+            }
             if (!ptr.isNull())
             {
                 if (object.contains("transform"))

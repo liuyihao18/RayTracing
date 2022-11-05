@@ -57,14 +57,7 @@ void MainWindow::onErrorMsgReceived(QString errMsg)
 
 void MainWindow::on_importButton_clicked()
 {
-    if (_renderer) {
-        if (!_renderer->isFinished()) {
-            return;
-        }
-        delete _renderer;
-        _renderer = nullptr;
-    }
-
+    /* Image */
     int image_height = ui->imageHeight->currentText().toInt();
     int image_width = image_height * aspect_ratio;
     _image = QImage(image_width, image_height, QImage::Format_RGB888);
@@ -77,6 +70,39 @@ void MainWindow::on_importButton_clicked()
     auto vfov = 60.0;
     _camera = Camera(eye, lookat, up, vfov);
 
+    /* Render */
+    on_renderButton_clicked();
+}
+
+void MainWindow::on_abortButton_clicked()
+{
+    if (_renderer) {
+        if (_renderer->isFinished()) {
+            return;
+        }
+        _renderer->terminate();
+        delete _renderer;
+        _renderer = nullptr;
+    }
+    else {
+        return;
+    }
+    ui->progressBar->setValue(0);
+    QMessageBox::information(this, QString("提示"), QString("停止成功"));
+}
+
+void MainWindow::on_renderButton_clicked()
+{
+    if (_renderer) {
+        if (!_renderer->isFinished()) {
+            return;
+        }
+        delete _renderer;
+        _renderer = nullptr;
+    }
+
+    int image_height = ui->imageHeight->currentText().toInt();
+
     /* Renderer */
     int n_samples = ui->nSamples->value();
     int max_depth = ui->maxDepth->value();
@@ -84,19 +110,4 @@ void MainWindow::on_importButton_clicked()
     connect(_renderer, SIGNAL(update_progress(double)), this, SLOT(onProgressUpdated(double)));
     _renderer->start();
 }
-
-void MainWindow::on_abortButton_clicked()
-{
-    if (_renderer) {
-        _renderer->terminate();
-        delete _renderer;
-        _renderer = nullptr;
-    }
-    ui->progressBar->setValue(0);
-    QMessageBox::information(this, QString("提示"), QString("停止成功"));
-}
-
-
-
-
 

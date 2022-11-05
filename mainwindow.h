@@ -27,6 +27,8 @@ private slots:
     void on_importButton_clicked();
     void on_abortButton_clicked();
 
+    void on_renderButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage _image;

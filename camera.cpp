@@ -1,6 +1,6 @@
 #include "camera.h"
-#include "gui_handler.h"
 #include "utils.h"
+#include "gui_handler.h"
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonArray>

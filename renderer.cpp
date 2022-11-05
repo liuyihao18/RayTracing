@@ -1,7 +1,7 @@
 #include "renderer.h"
 #include "camera.h"
-#include "bvh_node.h"
 #include "scene.h"
+#include "bvh_node.h"
 #include "material.h"
 #include "utils.h"
 #include "gui_handler.h"

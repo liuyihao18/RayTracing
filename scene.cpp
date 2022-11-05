@@ -4,11 +4,11 @@
 #include "cube.h"
 #include "triangle.h"
 #include "mesh.h"
-#include "glass.h"
 #include "lambertian.h"
 #include "metal.h"
-#include "image_texture.h"
+#include "glass.h"
 #include "light.h"
+#include "image_texture.h"
 #include "gui_handler.h"
 #include <QFile>
 #include <QJsonDocument>

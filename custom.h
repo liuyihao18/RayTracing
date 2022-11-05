@@ -19,30 +19,24 @@ class Hittable;
 class HittableList;
 class Scene;
 class Sphere;
-class MovingSphere;
 class XYRect;
 class XZRect;
 class YZRect;
-class ConstantMedium;
-
-class Translate;
-class RotateY;
+class Cube;
+class Mesh;
 class Transform;
 
 class Material;
 class Lambertian;
 class Metal;
 class Glass;
+class Light;
 
 class AABB;
 class BVHNode;
 
 class Texture;
 class ColorTexture;
-class CheckerTexture;
-class PerlinTexture;
 class ImageTexture;
-
-class Perlin;
 
 #endif // CUSTOM_H

@@ -40,7 +40,7 @@ void MainWindow::initialize()
 
     ui->maxDepth->setMinimum(1);
     ui->maxDepth->setMaximum(100);
-    ui->maxDepth->setValue(50);
+    ui->maxDepth->setValue(10);
 }
 
 void MainWindow::onProgressUpdated(double progress)
@@ -71,14 +71,22 @@ void MainWindow::onErrMsgReceived(QString errMsg)
 
 void MainWindow::on_importButton_clicked()
 {
-    /* World */
-    _scene = Scene::createFromJson("./scene/1.json", &_ok);
+    QString path = QFileDialog::getOpenFileName(this, tr("选择场景文件"), tr("./scene/"), tr("*.json"));
+    if (!path.isEmpty())
+    {
+        /* World */
+        _scene = Scene::createFromJson("./scene/1.json", &_ok);
 
-    /* Camera */
-    _camera = Camera::createFromJson("./scene/1.json", &_ok);
+        if (!_ok)
+        {
+            return;
+        }
+        /* Camera */
+        _camera = Camera::createFromJson("./scene/1.json", &_ok);
 
-    /* Render */
-    on_renderButton_clicked();
+        /* Render */
+        on_renderButton_clicked();
+    }
 }
 
 void MainWindow::on_abortButton_clicked()

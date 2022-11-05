@@ -6,9 +6,12 @@
 Mesh::Mesh(const QString &filename, QSharedPointer<Material> material_ptr)
 {
     objl::Loader loader;
-    if (!loader.LoadFile(filename.toStdString()))
+    is_loaded = loader.LoadFile(filename.toStdString());
+
+    if (!is_loaded)
     {
         std::cerr << "Error when loading obj file." << std::endl;
+        return;
     }
 
     auto mesh = loader.LoadedMeshes[0];

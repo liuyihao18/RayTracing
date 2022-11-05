@@ -10,6 +10,7 @@ inline bool box_compare(const QSharedPointer<Hittable> &a, const QSharedPointer<
     if (!a->get_bounding_box(box1) || !b->get_bounding_box(box2))
     {
         std::cerr << "No bounding box when building bvh tree." << std::endl;
+        exit(1);
     }
 
     return box1.min()[axis] < box2.min()[axis];
@@ -59,6 +60,7 @@ BVHNode::BVHNode(const QVector<QSharedPointer<Hittable>> &src_objects, size_t st
     if (!_left->get_bounding_box(box_left) || !_right->get_bounding_box(box_right))
     {
         std::cerr << "No bounding box when building bvh tree." << std::endl;
+        exit(1);
     }
 
     _box = get_combined_box(box_left, box_right);

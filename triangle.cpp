@@ -10,11 +10,13 @@ Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3, QSharedPoi
     _p1p3 = p3 - p1;
     if (eq(_p1p2.length(), 0) || eq(_p1p3.length(), 0)) {
         std::cerr << "Zero length when constructing triangle." << std::endl;
+        exit(1);
     }
 
     if (eq(qAbs(QVector3D::dotProduct(_p1p2, _p1p3)), _p1p2.length() * _p1p3.length()))
     {
         std::cerr << "Parallel when constructing triangle." << std::endl;
+        exit(1);
     }
 
     _n = QVector3D::crossProduct(_p1p2, _p1p3).normalized();

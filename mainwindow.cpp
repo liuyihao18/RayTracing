@@ -49,6 +49,12 @@ void MainWindow::onProgressUpdated(double progress)
     }
 }
 
+void MainWindow::onErrorMsgReceived(QString errMsg)
+{
+    QMessageBox::critical(this, "Error", errMsg);
+    exit(1);
+}
+
 void MainWindow::on_importButton_clicked()
 {
     if (_renderer) {

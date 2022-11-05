@@ -16,6 +16,7 @@ public:
 private:
     HittableList _triangles;
     BVHNode _root;
+    bool is_loaded;
 };
 
 #endif // MESH_H

@@ -22,6 +22,7 @@ public:
 
 private slots:
     void onProgressUpdated(double progress);
+    void onErrorMsgReceived(QString errMsg);
 
     void on_importButton_clicked();
     void on_abortButton_clicked();

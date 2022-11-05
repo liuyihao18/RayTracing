@@ -1,4 +1,12 @@
 #include "camera.h"
+#include <QFile>
+#include <QJsonDocument>
+
+Camera Camera::createFromJson(const QString& path, bool* ok)
+{
+    QFile jsonFile(path);
+    return Camera();
+}
 
 Camera::Camera(const Point &eye, const Point &lookat, const QVector3D &up, double vfov)
 {

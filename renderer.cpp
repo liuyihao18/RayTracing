@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "material.h"
 #include "utils.h"
+#include "gui_handler.h"
 #include <QImage>
 #include <iostream>
 
@@ -32,22 +33,17 @@ Color ray_color(const Ray &ray, const Color &background, const Hittable &scene, 
     return emitted + attenuation * ray_color(scattered, background, scene, depth - 1);
 }
 
-void Renderer::render(bool use_bvh)
+void Renderer::render(const Camera &camera, const Scene &scene, QImage &image, bool use_bvh)
 {
     if (use_bvh)
     {
-        BVHNode bvh(_scene.src());
-        _render(_camera, bvh, _scene.background(), _image);
+        BVHNode bvh(scene.src());
+        _render(camera, bvh, scene.background(), image);
     }
     else
     {
-        _render(_camera, _scene.src(), _scene.background(), _image);
+        _render(camera, scene.src(), scene.background(), image);
     }
-}
-
-void Renderer::run()
-{
-    render(true);
 }
 
 void Renderer::_render(const Camera &camera, const Hittable &_scene, const Color &background, QImage &image)
@@ -58,7 +54,7 @@ void Renderer::_render(const Camera &camera, const Hittable &_scene, const Color
     {
         for (int y = 0; y < _image_height; y++)
         {
-            emit update_progress((rendered_rows * 1.0) / (_n_samples * _image_height));
+            GUIHandler::Inst()->updateProgress((rendered_rows * 1.0) / (_n_samples * _image_height));
             for (int x = 0; x < _image_width; x++)
             {
                 auto u = (x + random_double()) / (_image_width - 1);
@@ -70,5 +66,5 @@ void Renderer::_render(const Camera &camera, const Hittable &_scene, const Color
             rendered_rows++;
         }
     }
-    emit update_progress(1.0);
+    GUIHandler::Inst()->updateProgress(1.0);
 }

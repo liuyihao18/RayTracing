@@ -56,6 +56,8 @@ set(PROJECT_SOURCES
         transform.h
         transform.cpp
         OBJ_Loader.h
+        gui_handler.h
+        gui_handler.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

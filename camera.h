@@ -6,6 +6,9 @@
 class Camera
 {
 public:
+    static Camera createFromJson(const QString& path, bool* ok = nullptr);
+
+public:
     Camera() = default;
     Camera(const Point &eye, const Point &lookat, const QVector3D &up, double vfov);
 

@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "custom.h"
 #include "scene.h"
 #include "camera.h"
 #include "renderer.h"
+#include <QThread>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -22,7 +22,9 @@ public:
 
 private slots:
     void onProgressUpdated(double progress);
-    void onErrorMsgReceived(QString errMsg);
+    void onInfoMsgReceived(QString infoMsg);
+    void onWarnMsgReceived(QString warnMsg);
+    void onErrMsgReceived(QString errMsg);
 
     void on_importButton_clicked();
     void on_abortButton_clicked();
@@ -34,6 +36,7 @@ private:
     QImage _image;
     Scene _scene;
     Camera _camera;
-    Renderer* _renderer;
+    Renderer _renderer;
+    QThread* _worker;
 };
 #endif // MAINWINDOW_H

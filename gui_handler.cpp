@@ -2,22 +2,22 @@
 
 GUIHandler *GUIHandler::_handler = nullptr;
 
-void GUIHandler::info(const QString &msg) const
+void GUIHandler::info(const QString &msg)
 {
     emit infoMsg(msg);
 }
 
-void GUIHandler::warn(const QString &msg) const
+void GUIHandler::warn(const QString &msg)
 {
     emit warnMsg(msg);
 }
 
-void GUIHandler::err(const QString &msg) const
+void GUIHandler::err(const QString &msg)
 {
     emit errMsg(msg);
 }
 
-void GUIHandler::updateProgress(double progress) const
+void GUIHandler::updateProgress(double progress)
 {
     emit updateProgressMsg(progress);
 }

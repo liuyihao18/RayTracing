@@ -21,10 +21,10 @@ public:
     void initialize();
 
 private slots:
-    void onProgressUpdated(double progress);
     void onInfoMsgReceived(QString infoMsg);
     void onWarnMsgReceived(QString warnMsg);
     void onErrMsgReceived(QString errMsg);
+    void onProgressUpdated(double progress);
 
     void on_importButton_clicked();
     void on_abortButton_clicked();

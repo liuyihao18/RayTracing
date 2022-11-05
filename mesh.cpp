@@ -1,17 +1,14 @@
 #include "mesh.h"
 #include "triangle.h"
 #include "OBJ_Loader.h"
-#include <iostream>
+#include "gui_handler.h"
 
 Mesh::Mesh(const QString &filename, QSharedPointer<Material> material_ptr)
 {
     objl::Loader loader;
-    is_loaded = loader.LoadFile(filename.toStdString());
-
-    if (!is_loaded)
+    if (!loader.LoadFile(filename.toStdString()))
     {
-        std::cerr << "Error when loading obj file." << std::endl;
-        return;
+        GUIHandler::Inst()->err("无法导入OBJ文件：" + filename);
     }
 
     auto mesh = loader.LoadedMeshes[0];

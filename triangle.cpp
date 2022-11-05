@@ -1,7 +1,6 @@
 ﻿#include "triangle.h"
 #include "double.h"
-#include <iostream>
-#include <complex>
+#include "gui_handler.h"
 
 Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3, QSharedPointer<Material> material_ptr)
     : _p1(p1), _p2(p2), _p3(p3), _material_ptr(material_ptr)
@@ -10,13 +9,12 @@ Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3, QSharedPoi
     _p1p3 = p3 - p1;
     if (eq(_p1p2.length(), 0) || eq(_p1p3.length(), 0))
     {
-        std::cerr << "Zero length when constructing triangle." << std::endl;
-        exit(1);
+        GUIHandler::Inst()->err("网格点重合");
     }
 
     if (eq(qAbs(QVector3D::dotProduct(_p1p2, _p1p3)), _p1p2.length() * _p1p3.length()))
     {
-        std::cerr << "Parallel when constructing triangle." << std::endl;
+        GUIHandler::Inst()->err("网格线平行");
         exit(1);
     }
 

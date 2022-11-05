@@ -21,16 +21,16 @@ private:
     static GUIHandler *_handler;
 
 signals:
-    void infoMsg(QString) const;
-    void warnMsg(QString) const;
-    void errMsg(QString) const;
-    void updateProgressMsg(double progress) const;
+    void infoMsg(QString);
+    void warnMsg(QString);
+    void errMsg(QString);
+    void updateProgressMsg(double progress);
 
 public:
-    void info(const QString& msg) const;
-    void warn(const QString& msg) const;
-    void err(const QString& msg) const;
-    void updateProgress(double progress) const;
+    void info(const QString& msg);
+    void warn(const QString& msg);
+    void err(const QString& msg);
+    void updateProgress(double progress);
 
 };
 

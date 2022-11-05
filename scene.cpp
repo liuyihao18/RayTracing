@@ -138,6 +138,15 @@ Scene Scene::createFromJson(const QString &path, bool *ok)
                             }
                             material_ptr = QSharedPointer<Metal>::create(texture_ptr, fuzz);
                         }
+                        else if (type == "light")
+                        {
+                            double intensity = 1.0;
+                            if (material.contains("intensity"))
+                            {
+                                intensity = material.value("intensity").toDouble(intensity);
+                            }
+                            material_ptr = QSharedPointer<Light>::create(texture_ptr, intensity);
+                        }
                     }
                 }
             }

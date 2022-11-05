@@ -22,7 +22,8 @@ public:
         int j = static_cast<int>(v * _image.height());
 
         i = std::clamp(i, 0, _image.width() - 1);
-        j = std::clamp(j, 0, _image.height() - 1);;
+        j = std::clamp(j, 0, _image.height() - 1);
+        ;
 
         QColor color = _image.pixelColor(i, j);
         double color_scale = 1.0 / 255.0;

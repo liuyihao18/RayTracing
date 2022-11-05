@@ -23,7 +23,7 @@ public:
 
 private:
     QSharedPointer<Texture> _texture; // 纹理
-    double _intensity; // 光照强度
+    double _intensity;                // 光照强度
 };
 
 #endif // LIGHT_H

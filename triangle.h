@@ -7,7 +7,7 @@ class Triangle : public Hittable
 {
 public:
     Triangle() = default;
-    Triangle(const Point& p1, const Point& p2, const Point& p3, QSharedPointer<Material> material_ptr);
+    Triangle(const Point &p1, const Point &p2, const Point &p3, QSharedPointer<Material> material_ptr);
 
     virtual bool hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) const override;
     virtual bool get_bounding_box(AABB &aabb) const override;

@@ -7,8 +7,7 @@
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow), _renderer(nullptr)
+    : QMainWindow(parent), ui(new Ui::MainWindow), _renderer(nullptr)
 {
     ui->setupUi(this);
     initialize();
@@ -16,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    if (_renderer) {
+    if (_renderer)
+    {
         _renderer->terminate();
         delete _renderer;
     }
@@ -44,7 +44,8 @@ void MainWindow::onProgressUpdated(double progress)
 {
     ui->progressBar->setValue(100 * progress);
     ui->imageView->setPixmap(QPixmap::fromImage(_image).scaled(ui->imageView->size()));
-    if (static_cast<int>(100 * progress) == 100) {
+    if (static_cast<int>(100 * progress) == 100)
+    {
         QMessageBox::information(this, QString("提示"), QString("渲染完成"));
     }
 }
@@ -71,15 +72,18 @@ void MainWindow::on_importButton_clicked()
 
 void MainWindow::on_abortButton_clicked()
 {
-    if (_renderer) {
-        if (_renderer->isFinished()) {
+    if (_renderer)
+    {
+        if (_renderer->isFinished())
+        {
             return;
         }
         _renderer->terminate();
         delete _renderer;
         _renderer = nullptr;
     }
-    else {
+    else
+    {
         return;
     }
     ui->progressBar->setValue(0);
@@ -88,8 +92,10 @@ void MainWindow::on_abortButton_clicked()
 
 void MainWindow::on_renderButton_clicked()
 {
-    if (_renderer) {
-        if (!_renderer->isFinished()) {
+    if (_renderer)
+    {
+        if (!_renderer->isFinished())
+        {
             return;
         }
         delete _renderer;
@@ -112,12 +118,15 @@ void MainWindow::on_renderButton_clicked()
 void MainWindow::on_saveButton_clicked()
 {
     QString path = QFileDialog::getSaveFileName(this, tr("选择保存位置"), tr("./output"), tr("*.png"));
-    if (!path.isEmpty()) {
-        if (_image.save(path)) {
+    if (!path.isEmpty())
+    {
+        if (_image.save(path))
+        {
             QMessageBox::information(this, QString("提示"), QString("保存成功"));
-        } else {
+        }
+        else
+        {
             QMessageBox::warning(this, QString("警告"), QString("保存失败"));
         }
     }
 }
-

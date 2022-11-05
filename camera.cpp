@@ -21,6 +21,5 @@ Ray Camera::get_ray(double s, double t) const
 {
     return Ray(
         _origin,
-        _left_bottom_corner + s * _horizontal + t * _vertical - _origin
-    );
+        _left_bottom_corner + s * _horizontal + t * _vertical - _origin);
 }

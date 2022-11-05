@@ -20,7 +20,7 @@ inline QColor color_to_rgb(const Color &color)
                   static_cast<int>(b * 256));
 }
 
-inline Color rgb_to_color(const QColor& color)
+inline Color rgb_to_color(const QColor &color)
 {
     return Color(color.redF(), color.greenF(), color.blueF());
 }

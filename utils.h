@@ -2,6 +2,7 @@
 #define UTILS_H
 #include "custom.h"
 #include <QColor>
+#include <QJsonArray>
 #include <random>
 
 inline QColor color_to_rgb(const Color &color)
@@ -114,6 +115,13 @@ inline QVector3D refract(const QVector3D &unit_v, const QVector3D &n, double ref
     QVector3D r_perp = refraction_ratio * (unit_v + cos_theta * n);
     QVector3D r_parallel = -sqrt(qAbs(1.0 - r_perp.lengthSquared())) * n;
     return r_perp + r_parallel;
+}
+
+inline QVector3D json_to_vec(const QJsonArray &array)
+{
+    return QVector3D(array[0].toDouble(),
+                     array[1].toDouble(),
+                     array[2].toDouble());
 }
 
 #endif // UTILS_H

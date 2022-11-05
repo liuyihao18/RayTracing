@@ -78,6 +78,7 @@ void MainWindow::on_importButton_clicked()
     Point eye(-2, 1.11, 2), lookat(0, 0.88, 0), up(0, 1, 0);
     auto vfov = 60.0;
     _camera = Camera(eye, lookat, up, vfov);
+    _camera = Camera::createFromJson("./scene/1.json");
 
     /* Render */
     on_renderButton_clicked();

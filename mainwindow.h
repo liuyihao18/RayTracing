@@ -29,6 +29,8 @@ private slots:
 
     void on_renderButton_clicked();
 
+    void on_saveButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QImage _image;

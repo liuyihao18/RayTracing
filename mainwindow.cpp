@@ -3,7 +3,7 @@
 #include "scene.h"
 #include "camera.h"
 #include "renderer.h"
-#include <QDebug>
+#include <QFileDialog>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -57,11 +57,6 @@ void MainWindow::onErrorMsgReceived(QString errMsg)
 
 void MainWindow::on_importButton_clicked()
 {
-    /* Image */
-    int image_height = ui->imageHeight->currentText().toInt();
-    int image_width = image_height * aspect_ratio;
-    _image = QImage(image_width, image_height, QImage::Format_RGB888);
-
     /* World */
     _scene = Scene::final_scene();
 
@@ -101,7 +96,10 @@ void MainWindow::on_renderButton_clicked()
         _renderer = nullptr;
     }
 
+    /* Image */
     int image_height = ui->imageHeight->currentText().toInt();
+    int image_width = image_height * aspect_ratio;
+    _image = QImage(image_width, image_height, QImage::Format_RGB888);
 
     /* Renderer */
     int n_samples = ui->nSamples->value();
@@ -109,5 +107,17 @@ void MainWindow::on_renderButton_clicked()
     _renderer = new Renderer(_camera, _scene, _image, image_height, n_samples, max_depth);
     connect(_renderer, SIGNAL(update_progress(double)), this, SLOT(onProgressUpdated(double)));
     _renderer->start();
+}
+
+void MainWindow::on_saveButton_clicked()
+{
+    QString path = QFileDialog::getSaveFileName(this, tr("选择保存位置"), tr("./output"), tr("*.png"));
+    if (!path.isEmpty()) {
+        if (_image.save(path)) {
+            QMessageBox::information(this, QString("提示"), QString("保存成功"));
+        } else {
+            QMessageBox::warning(this, QString("警告"), QString("保存失败"));
+        }
+    }
 }
 

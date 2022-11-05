@@ -53,11 +53,12 @@ void Renderer::run()
 void Renderer::_render(const Camera &camera, const Hittable &_scene, const Color &background, QImage &image)
 {
     QVector<QVector<Color>> buffer(_image_width, QVector<Color>(_image_height, Color(0, 0, 0)));
+    int rendered_rows = 0;
     for (int s = 0; s < _n_samples; s++)
     {
-        emit update_progress(s * 1.0 / _n_samples);
         for (int y = 0; y < _image_height; y++)
         {
+            emit update_progress((rendered_rows * 1.0) / (_n_samples * _image_height));
             for (int x = 0; x < _image_width; x++)
             {
                 auto u = (x + random_double()) / (_image_width - 1);
@@ -66,6 +67,7 @@ void Renderer::_render(const Camera &camera, const Hittable &_scene, const Color
                 buffer[x][y] += ray_color(ray, background, _scene, _max_depth);
                 image.setPixelColor(QPoint(x, _image_height - y - 1), color_to_rgb(buffer[x][y] / (s + 1)));
             }
+            rendered_rows++;
         }
     }
     emit update_progress(1.0);

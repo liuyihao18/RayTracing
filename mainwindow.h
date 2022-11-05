@@ -41,5 +41,6 @@ private:
     Camera _camera;
     Renderer _renderer;
     QThread *_worker;
+    bool _ok;
 };
 #endif // MAINWINDOW_H

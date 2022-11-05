@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), _worker(nullptr)
+    : QMainWindow(parent), ui(new Ui::MainWindow), _worker(nullptr), _ok(false)
 {
     ui->setupUi(this);
     initialize();
@@ -75,10 +75,7 @@ void MainWindow::on_importButton_clicked()
     _scene = Scene::final_scene();
 
     /* Camera */
-    Point eye(-2, 1.11, 2), lookat(0, 0.88, 0), up(0, 1, 0);
-    auto vfov = 60.0;
-    _camera = Camera(eye, lookat, up, vfov);
-    _camera = Camera::createFromJson("./scene/1.json");
+    _camera = Camera::createFromJson("./scene/1.json", &_ok);
 
     /* Render */
     on_renderButton_clicked();
@@ -86,6 +83,11 @@ void MainWindow::on_importButton_clicked()
 
 void MainWindow::on_abortButton_clicked()
 {
+    if (!_ok)
+    {
+        return;
+    }
+
     if (_worker)
     {
         if (_worker->isFinished())
@@ -106,6 +108,11 @@ void MainWindow::on_abortButton_clicked()
 
 void MainWindow::on_renderButton_clicked()
 {
+    if (!_ok)
+    {
+        return;
+    }
+
     if (_worker)
     {
         if (!_worker->isFinished())
@@ -135,6 +142,11 @@ void MainWindow::on_renderButton_clicked()
 
 void MainWindow::on_saveButton_clicked()
 {
+    if (!_ok)
+    {
+        return;
+    }
+
     QString path = QFileDialog::getSaveFileName(this, tr("选择保存位置"), tr("./output"), tr("*.png"));
     if (!path.isEmpty())
     {

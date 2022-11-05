@@ -98,7 +98,7 @@
      <number>24</number>
     </property>
    </widget>
-   <widget class="QComboBox" name="imageWidth">
+   <widget class="QComboBox" name="imageHeight">
     <property name="geometry">
      <rect>
       <x>730</x>
@@ -118,7 +118,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>图片宽度</string>
+     <string>图片高度</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

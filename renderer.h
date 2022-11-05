@@ -1,22 +1,37 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 #include "custom.h"
+#include <QThread>
 
-constexpr int n_threads = 4;
-constexpr int n_samples = 50;
-constexpr int max_depth = 50;
 constexpr double nearest = 0.001;
 
-class Renderer
+class Renderer : public QThread
 {
+    Q_OBJECT
+
+signals:
+    void update_progress(double progress);
+
 public:
-    Renderer(int image_height, double aspect_ratio) : _image_height(image_height), _image_width(image_height * aspect_ratio) {}
-    void render(const Camera &camera, const Scene &scene, const QString &output_filename, bool use_bvh = true) const;
+    Renderer(int image_height, int n_samples, int max_depth, const Camera &camera, const Scene &scene, QImage& image)
+        : _image_height(image_height), _image_width(image_height * aspect_ratio),
+          _n_samples(n_samples), _max_depth(max_depth),
+          _camera(camera), _scene(scene), _image(image)
+    {}
+
+    void render(bool use_bvh = true);
+    void run() override;
 
 private:
     int _image_height;
     int _image_width;
-    void _render(const Camera &camera, const Color &background, const Hittable &_scene, const QString &output_filename) const;
+    int _n_samples;
+    int _max_depth;
+    const Camera& _camera;
+    const Scene& _scene;
+    QImage& _image;
+
+    void _render(const Camera &camera, const Color &background, const Hittable &_scene, QImage& image);
 };
 
 #endif // RENDERER_H

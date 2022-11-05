@@ -6,8 +6,8 @@
 class Camera
 {
 public:
-    Camera(const Point &eye, const Point &lookat, const QVector3D &up,
-           double vfov, double aspect_ratio);
+    Camera() = default;
+    Camera(const Point &eye, const Point &lookat, const QVector3D &up, double vfov);
 
     Ray get_ray(double u, double v) const;
 

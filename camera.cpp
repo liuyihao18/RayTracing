@@ -1,7 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(const Point &eye, const Point &lookat, const QVector3D &up,
-               double vfov, double aspect_ratio)
+Camera::Camera(const Point &eye, const Point &lookat, const QVector3D &up, double vfov)
 {
     auto theta = qDegreesToRadians(vfov);
     auto h = qTan(theta / 2.0);

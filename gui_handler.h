@@ -27,11 +27,10 @@ signals:
     void updateProgressMsg(double progress);
 
 public:
-    void info(const QString& msg);
-    void warn(const QString& msg);
-    void err(const QString& msg);
+    void info(const QString &msg);
+    void warn(const QString &msg);
+    void err(const QString &msg);
     void updateProgress(double progress);
-
 };
 
 #endif // ALERTHANDLER_H

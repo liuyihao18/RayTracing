@@ -2,7 +2,7 @@
 #include <QFile>
 #include <QJsonDocument>
 
-Camera Camera::createFromJson(const QString& path, bool* ok)
+Camera Camera::createFromJson(const QString &path, bool *ok)
 {
     QFile jsonFile(path);
     return Camera();

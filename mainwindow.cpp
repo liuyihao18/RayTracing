@@ -124,7 +124,8 @@ void MainWindow::on_renderButton_clicked()
     int n_samples = ui->nSamples->value();
     int max_depth = ui->maxDepth->value();
     _renderer = Renderer(image_height, n_samples, max_depth);
-    auto fun = [&] {
+    auto fun = [&]
+    {
         _renderer.render(_camera, _scene, _image);
     };
     _worker = QThread::create(fun);

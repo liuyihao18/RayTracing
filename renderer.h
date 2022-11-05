@@ -11,7 +11,8 @@ public:
     Renderer(int image_height, int n_samples, int max_depth)
         : _image_height(image_height), _image_width(image_height * aspect_ratio),
           _n_samples(n_samples), _max_depth(max_depth)
-    {}
+    {
+    }
 
     void render(const Camera &camera, const Scene &scene, QImage &image, bool use_bvh = true);
 

@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-    static Camera createFromJson(const QString& path, bool* ok = nullptr);
+    static Camera createFromJson(const QString &path, bool *ok = nullptr);
 
 public:
     Camera() = default;

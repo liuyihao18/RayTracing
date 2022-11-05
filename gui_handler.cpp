@@ -21,5 +21,3 @@ void GUIHandler::updateProgress(double progress)
 {
     emit updateProgressMsg(progress);
 }
-
-

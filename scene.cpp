@@ -282,9 +282,73 @@ Scene Scene::createFromJson(const QString &path, bool *ok)
                 }
                 ptr = QSharedPointer<XZRect>::create(y0, y1, z0, z1, x, material_ptr);
             }
+            else if (type == "cube")
+            {
+                Point min(0.0, 0.0, 0.0);
+                Point max(1.0, 1.0, 1.0);
+                if (object.contains("geometric"))
+                {
+                    auto geometric_json = object.value("geometric");
+                    if (geometric_json.isObject())
+                    {
+                        auto geometric = geometric_json.toObject();
+                        if (geometric.contains("min"))
+                        {
+                            min = json_to_vec(geometric.value("min").toArray({min[0], min[1], min[2]}));
+                        }
+                        if (geometric.contains("max"))
+                        {
+                            max = json_to_vec(geometric.value("max").toArray({max[0], max[1], max[2]}));
+                        }
+                    }
+                }
+                ptr = QSharedPointer<Cube>::create(min, max, material_ptr);
+            }
             if (!ptr.isNull())
             {
-                scene.add(ptr);
+                if (object.contains("transform"))
+                {
+                    auto transform_json = object.value("transform");
+                    if (transform_json.isObject())
+                    {
+                        auto transform = transform_json.toObject();
+                        QMatrix4x4 matrix;
+                        if (transform.contains("translate"))
+                        {
+                            auto translate = json_to_vec(transform.value("translate").toArray({0.0, 0.0, 0.0}));
+                            matrix.translate(translate);
+                        }
+                        if (transform.contains("rotate_x"))
+                        {
+                            auto rotate_x = transform.value("rotate_x").toDouble(0.0);
+                            matrix.rotate(rotate_x, QVector3D(1, 0, 0));
+                        }
+                        if (transform.contains("rotate_y"))
+                        {
+                            auto rotate_y = transform.value("rotate_y").toDouble(0.0);
+                            matrix.rotate(rotate_y, QVector3D(0, 1, 0));
+                        }
+                        if (transform.contains("rotate_z"))
+                        {
+                            auto rotate_z = transform.value("rotate_z").toDouble(0.0);
+                            matrix.rotate(rotate_z, QVector3D(0, 0, 1));
+                        }
+                        if (transform.contains("scale"))
+                        {
+                            auto scale = transform.value("scale").toDouble(0.0);
+                            matrix.scale(scale);
+                        }
+                        scene.add(ptr, matrix);
+                    }
+                    else
+                    {
+                        scene.add(ptr);
+                    }
+                }
+                else
+                {
+                    scene.add(ptr);
+                }
             }
         }
         return scene;
@@ -303,7 +367,7 @@ Scene Scene::test_scene_1()
     scene.add(ground);
 
     /* sphere */
-    auto earth_texture = QSharedPointer<ImageTexture>::create("earth.jpg");
+    auto earth_texture = QSharedPointer<ImageTexture>::create("./texture/earth.jpg");
     auto center_material = QSharedPointer<Lambertian>::create(earth_texture);
     auto center = QSharedPointer<Sphere>::create(Point(0, 0.5, 0), 0.5, center_material);
     scene.add(center);
@@ -323,7 +387,7 @@ Scene Scene::test_scene_1()
     scene.add(back);
 
     /* cube */
-    auto container_texture = QSharedPointer<ImageTexture>::create("container.jpg");
+    auto container_texture = QSharedPointer<ImageTexture>::create("./texture/container.jpg");
     auto container_material = QSharedPointer<Lambertian>::create(container_texture);
     auto container = QSharedPointer<Cube>::create(Point(0, 0, 0), Point(1, 1, 1), container_material);
     QMatrix4x4 container_model;
@@ -356,7 +420,7 @@ Scene Scene::test_scene_1()
 
 Scene Scene::test_scene_2()
 {
-    Scene scene("./sky.jpg");
+    Scene scene("./texture/sky.jpg");
 
     /* ground */
     auto ground_material = QSharedPointer<Lambertian>::create(Color(0.8, 0.7, 0.4));
@@ -365,7 +429,7 @@ Scene Scene::test_scene_2()
 
     /* bunny */
     auto bunny_material = QSharedPointer<Lambertian>::create(Color(0.9, 0.9, 0.9));
-    auto bunny = QSharedPointer<Mesh>::create("./bunny.obj", bunny_material);
+    auto bunny = QSharedPointer<Mesh>::create("./model/bunny.obj", bunny_material);
     QMatrix4x4 bunny_model;
     bunny_model.scale(8.0);
     scene.add(bunny, bunny_model);
